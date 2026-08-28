@@ -1,0 +1,270 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+}
+
+header {
+  background: #1f2937;
+  color: white;
+  padding: 25px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+}
+
+header p {
+  margin-bottom: 0;
+}
+
+main {
+  width: 90%;
+  max-width: 1100px;
+  margin: 30px auto;
+}
+
+.intro {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.panel {
+  background: white;
+  padding: 25px;
+  margin-bottom: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+form {
+  display: grid;
+  gap: 15px;
+}
+
+input,
+textarea,
+select,
+button {
+  padding: 12px;
+  font-size: 16px;
+}
+
+textarea {
+  min-height: 80px;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+  border-radius: 6px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.delivery-card {
+  border: 1px solid #ddd;
+  padding: 18px;
+  margin-top: 15px;
+  border-radius: 8px;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.status-open {
+  color: #b45309;
+}
+
+.status-assigned {
+  color: #2563eb;
+}
+
+.status-picked_up {
+  color: #9333ea;
+}
+
+.status-delivered {
+  color: #15803d;
+}
+
+.actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.code-box {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f1f5f9;
+  font-family: monospace;
+}
+
+@media (max-width: 600px) {
+
+  main {
+    width: 95%;
+  }
+
+}
+
+.main-header {
+  background: #1f2937;
+  color: white;
+  padding: 18px 8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.main-header nav {
+  display: flex;
+  gap: 10px;
+}
+
+.main-header nav a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+.main-header nav a:hover,
+.main-header nav a.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.home-page {
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: center;
+  padding: 70px 20px 50px;
+}
+
+.hero h1 {
+  font-size: 38px;
+  margin-bottom: 15px;
+}
+
+.hero p {
+  max-width: 700px;
+  margin: auto;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.role-selection {
+  padding-bottom: 70px;
+}
+
+.role-selection h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.role-card {
+  display: block;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #1f2937;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+}
+
+.role-card:hover {
+  transform: translateY(-5px);
+}
+
+.role-icon {
+  font-size: 45px;
+}
+
+.role-card h3 {
+  margin-top: 15px;
+}
+
+.role-card p {
+  line-height: 1.5;
+}
+
+.role-card span {
+  font-weight: bold;
+}
+
+.dashboard-page {
+  width: 90%;
+  max-width: 1000px;
+  margin: 30px auto;
+}
+
+.dashboard-heading {
+  margin-bottom: 25px;
+}
+
+.dashboard-heading h1 {
+  margin-bottom: 8px;
+}
+
+.dashboard-card {
+  background: white;
+  padding: 25px;
+  margin-bottom: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card label {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+@media (max-width: 700px) {
+
+  .main-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .main-header nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+  }
+
+}

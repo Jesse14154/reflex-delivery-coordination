@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Retailer Dashboard | Reflex</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+
+<body>
+
+
+  <header class="main-header">
+
+    <div class="logo">
+      ⚡ REFLEX
+    </div>
+
+
+    <nav>
+
+      <a href="index.html">
+        Home
+      </a>
+
+      <a
+        href="retailer.html"
+        class="active"
+      >
+        Retailer
+      </a>
+
+      <a href="dispatcher.html">
+        Dispatcher
+      </a>
+
+      <a href="rider.html">
+        Rider
+      </a>
+
+    </nav>
+
+  </header>
+
+
+
+  <main class="dashboard-page">
+
+
+    <section class="dashboard-heading">
+
+      <h1>
+        🏪 Retailer Dashboard
+      </h1>
+
+      <p>
+        Create delivery requests and monitor
+        their progress.
+      </p>
+
+    </section>
+
+
+
+    <section class="dashboard-card">
+
+
+      <h2>
+        Create New Delivery
+      </h2>
+
+
+      <form id="deliveryForm">
+
+
+        <label>
+          Customer Name
+        </label>
+
+        <input
+          type="text"
+          id="customerName"
+          placeholder="Enter customer name"
+          required
+        >
+
+
+
+        <label>
+          Customer Phone
+        </label>
+
+        <input
+          type="text"
+          id="customerPhone"
+          placeholder="Enter customer phone number"
+          required
+        >
+
+
+
+        <label>
+          Delivery Address
+        </label>
+
+        <input
+          type="text"
+          id="deliveryAddress"
+          placeholder="Enter delivery address"
+          required
+        >
+
+
+
+        <label>
+          Item Description
+        </label>
+
+        <textarea
+          id="itemDescription"
+          placeholder="Describe the item"
+          required
+        ></textarea>
+
+
+
+        <button type="submit">
+
+          Create Delivery
+
+        </button>
+
+
+      </form>
+
+
+    </section>
+
+
+
+    <section class="dashboard-card">
+
+
+      <h2>
+        My Deliveries
+      </h2>
+
+
+      <div id="retailerDeliveries">
+
+        <p>
+          Loading deliveries...
+        </p>
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
+
+  <script src="retailer.js"></script>
+
+
+</body>
+
+</html>
