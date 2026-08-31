@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const db = require("./database");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
@@ -182,7 +182,7 @@ app.patch("/api/deliveries/:id/status", (req, res) => {
   }
 
   const allowedTransitions = {
-    ASSIGNED: "PICKED_UP"
+    ASSIGNED: "PICKED UP"
   };
 
   if (allowedTransitions[delivery.status] !== status) {
@@ -225,9 +225,9 @@ app.post("/api/deliveries/:id/confirm", (req, res) => {
     });
   }
 
-  if (delivery.status !== "PICKED_UP") {
+  if (delivery.status !== "PICKED UP") {
     return res.status(400).json({
-      error: "Delivery must be PICKED_UP before confirmation."
+      error: "Delivery must be PICKED UP before confirmation."
     });
   }
 
@@ -278,5 +278,5 @@ app.get("/api/deliveries/:id/history", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Reflex is running at http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

@@ -1,41 +1,43 @@
 # ⚡ Reflex Delivery Coordination System
 
-> **Every Delivery. Every Move. In Sync.**
+> ## Every Delivery. Every Move. In Sync.
 
 ## Overview
 
-Reflex is a role-based delivery coordination system designed to help small retailers manage deliveries through one coordinated workflow.
+Reflex is a role-based delivery coordination system designed to help coordinate deliveries through one central workflow.
 
-The system connects three important roles:
+The platform connects three key roles:
 
 **🏪 Retailer → 📋 Dispatcher → 🛵 Rider**
 
-Instead of relying entirely on phone calls, WhatsApp messages, and informal coordination, Reflex provides a structured system where delivery requests can be created, assigned, tracked, and confirmed.
+Instead of relying entirely on phone calls and informal communication, Reflex provides a structured system where deliveries can be created, assigned, tracked, and confirmed.
 
-The platform also supports live delivery updates so users can see important delivery changes without manually refreshing their dashboard.
+The system also provides live updates so delivery changes can be communicated across connected dashboards.
 
 ---
 
 # The Problem
 
-Small retailers may coordinate deliveries using phone calls, WhatsApp messages, and informal communication.
+Delivery coordination can become difficult when different people rely on separate phone calls, messages, and informal communication.
 
-This creates several problems:
+This can create problems such as:
 
-* It may be unclear who is responsible for a delivery.
-* Delivery progress may not be visible.
-* Dispatchers may struggle to track open requests.
-* Riders may not have a clear view of their assigned deliveries.
-* Retailers may not know whether a delivery has been completed.
-* Informal communication provides limited delivery history and accountability.
+* Unclear responsibility for deliveries.
+* Difficulty tracking delivery progress.
+* Dispatchers struggling to monitor open delivery requests.
+* Riders lacking a clear view of assigned deliveries.
+* Retailers having limited visibility into delivery completion.
+* Limited accountability and delivery history.
 
-Reflex addresses this problem by centralising delivery coordination into one structured workflow.
+Reflex addresses this problem by bringing the delivery workflow into one coordinated system.
 
 ---
 
 # The Solution
 
-Reflex provides a role-based delivery coordination workflow.
+Reflex provides separate workspaces for each role while keeping all delivery information connected through one central system.
+
+The delivery workflow is:
 
 ```text
 🏪 Retailer
@@ -49,9 +51,9 @@ Assign Rider
 ASSIGNED
       ↓
 🛵 Rider
-Pick Up Delivery
+Mark as Picked Up
       ↓
-PICKED_UP
+PICKED UP
       ↓
 🛵 Rider
 Confirm Delivery
@@ -62,69 +64,67 @@ DELIVERED
 Views Final Delivery Status
 ```
 
-Each role has a dedicated dashboard designed around the actions that role needs to perform.
-
 ---
 
 # Key Features
 
 ## 🏪 Retailer Dashboard
 
-Retailers can:
+The Retailer can:
 
-* Create new delivery requests.
-* Enter customer name.
-* Enter customer phone number.
-* Enter delivery address.
-* Enter item description.
-* Receive a delivery confirmation code.
+* Create a new delivery.
+* Enter customer details.
+* Enter a customer phone number.
+* Enter a delivery address.
+* Enter an item description.
+* Receive a confirmation code.
 * View created deliveries.
-* Search deliveries.
-* Filter deliveries by status.
-* View assigned riders.
 * Monitor delivery progress.
+* View the assigned rider.
 
 ---
 
 ## 📋 Dispatcher Dashboard
 
-Dispatchers can:
+The Dispatcher can:
 
-* View OPEN delivery requests.
 * View all deliveries.
-* View delivery information.
-* Select an available rider.
-* Assign riders to deliveries.
+* Identify OPEN delivery requests.
+* View available riders.
+* Select a rider.
+* Assign a rider to a delivery.
 * Monitor delivery status changes.
 
 ---
 
 ## 🛵 Rider Dashboard
 
-Riders can:
+The Rider can:
 
-* Select their rider profile.
+* Select a rider profile.
 * View assigned deliveries.
 * View customer information.
-* View delivery addresses.
+* View the delivery address.
 * View item information.
-* Mark deliveries as PICKED_UP.
-* Confirm deliveries using a confirmation code.
-* Complete deliveries as DELIVERED.
+* Mark an assigned delivery as `PICKED UP`.
+* Enter a confirmation code.
+* Confirm delivery completion.
 
 ---
 
 # ⚡ Real-Time Updates
 
-Reflex supports real-time delivery updates using **Server-Sent Events (SSE)**.
+Reflex uses **Server-Sent Events (SSE)** to provide live updates from the server to connected dashboards.
 
-The frontend connects to the backend event endpoint:
+The frontend connects to the event endpoint:
 
 ```text
 /api/events
 ```
 
-The system listens for important delivery events including:
+using the browser's `EventSource` API.
+
+The backend sends the following events:
 
 ```text
 delivery-created
@@ -133,11 +133,11 @@ status-updated
 delivery-confirmed
 ```
 
-When an event is received, the relevant dashboard reloads the latest delivery data.
+These events are triggered when important delivery actions occur.
 
-This means delivery changes can become visible across connected dashboards without requiring the user to manually refresh the page.
+The frontend can use these events to refresh delivery information and update the user interface without requiring the user to manually reload the page.
 
-The frontend also displays a **Live Updates** indicator to show the status of the real-time connection.
+The application also includes a **Live Updates** indicator as part of the frontend experience.
 
 ---
 
@@ -148,25 +148,24 @@ The Reflex frontend was redesigned to create a more professional and presentatio
 The interface includes:
 
 * Modern logistics-inspired design.
-* Separate role-based dashboards.
+* Separate dashboards for each user role.
 * Professional navigation.
 * Responsive layouts.
 * Delivery cards.
-* Clear status badges.
+* Clear delivery status badges.
 * Improved forms and buttons.
-* Search and filtering controls.
-* Empty states.
+* Empty-state messages.
 * Live update indicators.
-* Delivery notification messages.
+* Delivery update feedback.
 * Responsive design for smaller screens.
 
 ---
 
 # 📦 Delivery Journey Animation
 
-The Reflex homepage includes an animated visualisation of how a delivery moves through the platform.
+The Reflex homepage includes an animated visualisation of the delivery process.
 
-The journey demonstrates:
+The animation represents the journey:
 
 ```text
 🏪 Retailer
@@ -180,9 +179,9 @@ The journey demonstrates:
 🏠 Customer
 ```
 
-The animation is decorative and does not interact with the backend.
+The animation is a frontend presentation feature and helps visitors quickly understand the purpose of the Reflex system.
 
-Its purpose is to visually communicate the Reflex delivery workflow to users and presentation audiences.
+It does not affect the backend delivery workflow.
 
 ---
 
@@ -240,58 +239,110 @@ REFLEX/
 
 ---
 
-# Application Architecture
+# System Architecture
 
 ```text
-                    REFLEX PLATFORM
+                  REFLEX DELIVERY SYSTEM
 
-       🏪 Retailer     📋 Dispatcher     🛵 Rider
-              │              │              │
-              └──────────────┼──────────────┘
-                             │
-                             ▼
-                      Express REST API
-                             │
-                ┌────────────┴────────────┐
-                │                         │
-                ▼                         ▼
-          SQLite Database        Server-Sent Events
-                                          │
-                                          ▼
-                                  Live Dashboard Updates
+   🏪 Retailer      📋 Dispatcher      🛵 Rider
+         │                │                │
+         └────────────────┼────────────────┘
+                          │
+                          ▼
+                   Express REST API
+                          │
+             ┌────────────┴────────────┐
+             │                         │
+             ▼                         ▼
+       SQLite Database       Server-Sent Events
+                                        │
+                                        ▼
+                               Live Dashboard Updates
 ```
+
+---
+
+# Delivery Status Flow
+
+Reflex uses controlled delivery status transitions:
+
+```text
+OPEN
+  ↓
+ASSIGNED
+  ↓
+PICKED UP
+  ↓
+DELIVERED
+```
+
+Each status represents a specific stage in the delivery process.
+
+The system prevents invalid workflow transitions by checking the current delivery status before updating it.
+
+---
+
+# Real-Time Event Flow
+
+When a delivery action occurs:
+
+```text
+User Action
+     ↓
+Express API
+     ↓
+SQLite Database Updated
+     ↓
+Server Sends SSE Event
+     ↓
+Connected Dashboards Receive Event
+     ↓
+Frontend Refreshes Relevant Data
+```
+
+This helps keep the delivery coordination workflow synchronised across users.
 
 ---
 
 # Installation
 
-## 1. Clone the repository
+## 1. Clone the Repository
 
 ```bash
 git clone <your-repository-url>
 ```
 
-## 2. Open the project folder
+## 2. Open the Project Folder
 
 ```bash
 cd reflex-delivery-coordination
 ```
 
-## 3. Install dependencies
+## 3. Install Dependencies
 
 ```bash
 npm install
 ```
 
-## 4. Start the application
+## 4. Start the Application
 
-Use the existing project command:
+Use the project's development command:
 
 ```bash
 npm run dev
 ```
 
-Open the application using the local address shown in the terminal.
+The application will run locally using the port configured by:
+
+```javascript
+process.env.PORT || 3000
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
 
 ---
 
@@ -299,18 +350,14 @@ Open the application using the local address shown in the terminal.
 
 ## Step 1 — Create a Delivery
 
-Open the:
-
-```text
-Retailer Dashboard
-```
+Open the **Retailer Dashboard**.
 
 Enter:
 
-* Customer name
-* Customer phone
-* Delivery address
-* Item description
+* Customer name.
+* Customer phone number.
+* Delivery address.
+* Item description.
 
 Create the delivery.
 
@@ -320,27 +367,17 @@ Expected status:
 OPEN
 ```
 
-A confirmation code should also be generated.
+A confirmation code is generated for the delivery.
 
 ---
 
 ## Step 2 — Assign a Rider
 
-Open the:
-
-```text
-Dispatcher Dashboard
-```
+Open the **Dispatcher Dashboard**.
 
 Find the OPEN delivery.
 
-Select a rider.
-
-Click:
-
-```text
-Assign Rider
-```
+Select a rider and assign them to the delivery.
 
 Expected status:
 
@@ -352,15 +389,11 @@ ASSIGNED
 
 ## Step 3 — Pick Up the Delivery
 
-Open the:
-
-```text
-Rider Dashboard
-```
+Open the **Rider Dashboard**.
 
 Select the assigned rider.
 
-Find the delivery.
+Find the assigned delivery.
 
 Click:
 
@@ -371,18 +404,18 @@ Mark as Picked Up
 Expected status:
 
 ```text
-PICKED_UP
+PICKED UP
 ```
 
 ---
 
-## Step 4 — Confirm the Delivery
+## Step 4 — Confirm Delivery
 
 Enter the delivery confirmation code.
 
-Click the confirmation action.
+Confirm the delivery.
 
-Expected status:
+Expected final status:
 
 ```text
 DELIVERED
@@ -392,22 +425,74 @@ DELIVERED
 
 ## Step 5 — Verify Live Updates
 
-Observe the connected dashboards.
+Keep more than one dashboard open.
 
-When delivery events occur, the application should reload the latest delivery data through the real-time event connection.
+Perform actions such as:
 
-Test the following events:
+* Creating a delivery.
+* Assigning a rider.
+* Marking a delivery as picked up.
+* Confirming a delivery.
 
-* Delivery created.
-* Rider assigned.
-* Delivery picked up.
-* Delivery confirmed.
+Verify that the connected dashboards receive the latest delivery information through the application's real-time event system.
+
+---
+
+# API Overview
+
+## Riders
+
+```text
+GET /api/riders
+```
+
+Returns the available riders.
+
+---
+
+## Deliveries
+
+```text
+GET /api/deliveries
+```
+
+Returns delivery information.
+
+```text
+POST /api/deliveries
+```
+
+Creates a new delivery.
+
+```text
+POST /api/deliveries/:id/assign
+```
+
+Assigns a rider to an OPEN delivery.
+
+```text
+PATCH /api/deliveries/:id/status
+```
+
+Updates a delivery status according to the allowed workflow.
+
+```text
+POST /api/deliveries/:id/confirm
+```
+
+Confirms delivery using the delivery confirmation code.
+
+```text
+GET /api/deliveries/:id/history
+```
+
+Returns the status history for a delivery.
 
 ---
 
 # Documentation
 
-The project includes the following technical documentation:
+The project includes additional documentation:
 
 ## `ARCHITECTURE.md`
 
@@ -415,58 +500,61 @@ Explains:
 
 * System structure.
 * User roles.
-* Data flow.
-* API interaction.
-* Database.
+* Delivery data flow.
+* API communication.
+* Database responsibilities.
 * Real-time updates.
 
 ## `TRADEOFFS.md`
 
-Explains important engineering trade-offs and the limitations accepted during the MVP.
+Explains important engineering decisions and trade-offs made during the MVP.
 
 ## `ROADMAP.md`
 
-Explains how Reflex could evolve from the current MVP into a more secure and scalable production system.
+Explains possible future improvements needed to move Reflex from an MVP toward a production-ready system.
 
 ---
 
 # MVP Limitations
 
-Reflex is currently an MVP.
+Reflex is currently a Minimum Viable Product.
 
 The current version does not yet include:
 
 * Full user authentication.
 * Production-grade role-based authorization.
-* Cloud database infrastructure.
-* Advanced monitoring.
+* Cloud-hosted database infrastructure.
+* Advanced monitoring and logging.
 * Live GPS rider tracking.
 * Customer notification services.
-* Production-scale security controls.
+* Advanced production security controls.
 
-These limitations are intentional MVP trade-offs and are documented in the project roadmap and trade-off documentation.
+These limitations provide opportunities for future development and scaling.
 
 ---
 
 # Future Improvements
 
-Potential future improvements include:
+Possible future improvements include:
 
-* Secure user authentication.
+* User authentication.
 * Role-based access control.
-* PostgreSQL or managed cloud database.
+* Cloud-hosted database infrastructure.
+* PostgreSQL migration.
 * SMS and email notifications.
 * Live rider location tracking.
-* Delivery history.
+* Delivery history dashboards.
 * Operational analytics.
 * Automated rider assignment.
 * Route optimisation.
-* Mobile rider applications.
+* Mobile applications for riders.
 
 ---
 
 # Motto
 
-> **Every Delivery. Every Move. In Sync.**
+> ## Every Delivery. Every Move. In Sync.
 
-Reflex is designed around the idea that every participant in the delivery process should have visibility into the same coordinated workflow.
+Reflex is built around one idea:
+
+**Every person involved in a delivery should be connected to the same coordinated workflow.**
