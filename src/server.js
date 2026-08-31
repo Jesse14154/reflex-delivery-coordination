@@ -127,7 +127,9 @@ app.post("/api/deliveries/:id/assign", (req, res) => {
     });
   }
 
-  if (delivery.status !== "OPEN") {
+  const currentStatus = String(delivery.status || "").trim().toUpperCase();
+
+  if (currentStatus !== "OPEN") {
     return res.status(409).json({
       error: "Delivery has already been assigned."
     });
@@ -225,9 +227,11 @@ app.post("/api/deliveries/:id/confirm", (req, res) => {
     });
   }
 
-  if (delivery.status !== "PICKED UP") {
+  const currentStatus = String(delivery.status || "").trim().toUpperCase();
+
+  if (currentStatus !== "PICKED_UP") {
     return res.status(400).json({
-      error: "Delivery must be PICKED UP before confirmation."
+      error: "Delivery must be PICKED_UP before confirmation."
     });
   }
 
