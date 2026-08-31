@@ -169,7 +169,7 @@ app.post("/api/deliveries/:id/assign", (req, res) => {
 
 app.patch("/api/deliveries/:id/status", (req, res) => {
   const deliveryId = req.params.id;
-  const { status } = req.body;
+  const status = String(req.body.status || "").trim().toUpperCase();
 
   const delivery = db.prepare(
     "SELECT * FROM deliveries WHERE id = ?"
@@ -181,11 +181,11 @@ app.patch("/api/deliveries/:id/status", (req, res) => {
     });
   }
 
-  const allowedTransitions = {
-    ASSIGNED: "PICKED UP"
-  };
+  const currentStatus = String(delivery.status || "").trim().toUpperCase();
+  const isValidTransition =
+    currentStatus === "ASSIGNED" && status === "PICKED_UP";
 
-  if (allowedTransitions[delivery.status] !== status) {
+  if (!isValidTransition) {
     return res.status(400).json({
       error: `Cannot change status from ${delivery.status} to ${status}.`
     });
