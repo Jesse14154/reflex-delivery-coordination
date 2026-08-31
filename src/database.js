@@ -8,7 +8,7 @@ if (!fs.existsSync(dataDirectory)) {
   fs.mkdirSync(dataDirectory, { recursive: true });
 }
 
-const dbPath = path.join(dataDirectory, "reflex.db");
+const dbPath = process.env.DB_PATH || path.join(dataDirectory, "reflex.db");
 const db = new Database(dbPath);
 
 db.exec(`
