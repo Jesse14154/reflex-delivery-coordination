@@ -8,6 +8,12 @@ const allDeliveries =
     "allDeliveries"
   );
 
+const openCount =
+  document.getElementById("openCount");
+
+const allCount =
+  document.getElementById("allCount");
+
 
 let deliveries = [];
 
@@ -54,11 +60,13 @@ function renderOpenDeliveries() {
         delivery.status === "OPEN"
     );
 
+  openCount.textContent = open.length;
+
 
   if (open.length === 0) {
 
     openDeliveries.innerHTML =
-      "<p>No open deliveries.</p>";
+      "<p class=\"empty-note\">No open deliveries.</p>";
 
     return;
 
@@ -89,34 +97,37 @@ function renderOpenDeliveries() {
 
       <div class="delivery-card">
 
-
-        <h3>
-          Delivery #${delivery.id}
-        </h3>
+        <div class="delivery-card-head">
+          <div>
+            <h3>Delivery #${delivery.id}</h3>
+            <p class="cust-name">${delivery.customer_name}</p>
+          </div>
+          <span class="status status-${delivery.status.toLowerCase()}">
+            ${delivery.status}
+          </span>
+        </div>
 
 
         <p>
-          <strong>Customer:</strong>
-          ${delivery.customer_name}
-        </p>
-
-
-        <p>
-          <strong>Phone:</strong>
+          <strong>Phone</strong>
           ${delivery.customer_phone}
         </p>
 
 
         <p>
-          <strong>Address:</strong>
+          <strong>Address</strong>
           ${delivery.delivery_address}
         </p>
 
 
         <p>
-          <strong>Item:</strong>
+          <strong>Item</strong>
           ${delivery.item_description}
         </p>
+
+        <div class="timestamps">
+          <div class="time-item"><span class="time-icon">🕒</span><strong>Booked</strong> ${formatDateTime(delivery.created_at)}</div>
+        </div>
 
 
         <div class="actions">
@@ -221,9 +232,7 @@ async function assignRider(
   }
 
 
-  alert(
-    "Rider assigned successfully!"
-  );
+  showToast(`Delivery #${deliveryId} assigned successfully!`);
 
 
   loadDeliveries();
@@ -235,13 +244,15 @@ function renderAllDeliveries() {
 
   allDeliveries.innerHTML = "";
 
+  allCount.textContent = deliveries.length;
+
 
   if (
     deliveries.length === 0
   ) {
 
     allDeliveries.innerHTML =
-      "<p>No deliveries yet.</p>";
+      "<p class=\"empty-note\">No deliveries yet.</p>";
 
     return;
 
@@ -254,41 +265,39 @@ function renderAllDeliveries() {
       delivery.rider_name ||
       "Not Assigned";
 
+    const isDelivered =
+      delivery.status === "DELIVERED";
+
+    const deliveredTimeRow =
+      isDelivered
+        ? `<div class="time-item"><span class="time-icon">✅</span><strong>Delivered</strong> ${formatDateTime(delivery.updated_at)}</div>`
+        : "";
+
 
     allDeliveries.innerHTML += `
 
-      <div class="delivery-card">
+      <div class="delivery-card ${isDelivered ? "is-delivered" : ""}">
 
-
-        <h3>
-          Delivery #${delivery.id}
-        </h3>
-
-
-        <p>
-          <strong>Customer:</strong>
-          ${delivery.customer_name}
-        </p>
-
-
-        <p>
-          <strong>Status:</strong>
-
-          <span
-            class="status status-${delivery.status.toLowerCase()}"
-          >
-
+        <div class="delivery-card-head">
+          <div>
+            <h3>Delivery #${delivery.id}</h3>
+            <p class="cust-name">${delivery.customer_name}</p>
+          </div>
+          <span class="status status-${delivery.status.toLowerCase()}">
             ${delivery.status}
-
           </span>
-
-        </p>
+        </div>
 
 
         <p>
-          <strong>Rider:</strong>
+          <strong>Rider</strong>
           ${riderName}
         </p>
+
+        <div class="timestamps">
+          <div class="time-item"><span class="time-icon">🕒</span><strong>Booked</strong> ${formatDateTime(delivery.created_at)}</div>
+          ${deliveredTimeRow}
+        </div>
 
 
       </div>
@@ -307,6 +316,9 @@ function connectToEvents() {
       "/api/events"
     );
 
+  events.onopen = () => setLiveOn();
+  events.onerror = () => setLiveOff();
+
 
   [
     "delivery-created",
@@ -319,7 +331,14 @@ function connectToEvents() {
 
       eventName,
 
-      () => {
+      (e) => {
+
+        let payload = null;
+        try { payload = JSON.parse(e.data); } catch (err) {}
+
+        if (payload && payload.id && eventName === "delivery-created") {
+          showToast(`New request: Delivery #${payload.id}`);
+        }
 
         loadDeliveries();
 

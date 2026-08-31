@@ -1,190 +1,449 @@
 # Reflex System Architecture
 
-## 1. Overview
+## Overview
 
-Reflex is a delivery coordination system designed for small Kenyan retailers who currently manage deliveries through phone calls and WhatsApp messages.
+Reflex is a role-based delivery coordination system.
 
-The system provides a structured delivery workflow where:
+The architecture supports a structured workflow between:
 
-1. Retailer staff create delivery requests.
-2. Dispatchers view open delivery requests.
-3. Dispatchers assign deliveries to riders.
-4. Riders view their assigned deliveries.
-5. Riders update the delivery status.
-6. Riders confirm delivery using a confirmation code.
-7. Retailers can monitor the delivery progress.
+* Retailer
+* Dispatcher
+* Rider
 
-The architecture separates the user interface, application logic and data storage.
+The system allows delivery information to move through a central backend while connected dashboards receive updated information as delivery events occur.
+
+The core architecture is:
+
+```text
+Retailer
+    │
+    ▼
+Express API
+    │
+    ▼
+SQLite Database
+    │
+    ├──────────────────► Dispatcher
+    │
+    ├──────────────────► Rider
+    │
+    ▼
+Server-Sent Events
+    │
+    ▼
+Live Dashboard Updates
+```
 
 ---
 
-# 2. Technology Stack
+# 1. User Roles
 
-## Frontend
+## Retailer
 
-The frontend uses:
+The Retailer creates and monitors delivery requests.
+
+A retailer provides:
+
+* Customer name.
+* Customer phone number.
+* Delivery address.
+* Item description.
+
+When a delivery is created, the system stores it with the initial status:
+
+```text
+OPEN
+```
+
+The system also generates a confirmation code used later to verify delivery completion.
+
+---
+
+## Dispatcher
+
+The Dispatcher coordinates delivery assignment.
+
+The Dispatcher can:
+
+1. View OPEN delivery requests.
+2. View available riders.
+3. Select a rider.
+4. Assign the rider to the delivery.
+
+After assignment, the delivery status becomes:
+
+```text
+ASSIGNED
+```
+
+---
+
+## Rider
+
+The Rider manages the physical delivery process.
+
+The Rider can:
+
+1. Select their rider profile.
+2. View assigned deliveries.
+3. Mark a delivery as picked up.
+4. Confirm delivery using the confirmation code.
+
+The delivery workflow is:
+
+```text
+ASSIGNED
+    ↓
+PICKED_UP
+    ↓
+DELIVERED
+```
+
+---
+
+# 2. Frontend Architecture
+
+The frontend is built using:
 
 * HTML
 * CSS
-* JavaScript
+* Vanilla JavaScript
 
-The frontend is separated into three role-based dashboards:
+The application separates users into dedicated dashboards:
 
-* Retailer Dashboard
-* Dispatcher Dashboard
-* Rider Dashboard
+```text
+public/
 
-This separation reduces clutter and ensures that each user sees only the actions relevant to their role.
+├── index.html
+├── retailer.html
+├── dispatcher.html
+├── rider.html
+├── style.css
+├── retailer.js
+├── dispatcher.js
+├── rider.js
+└── realtime.js
+```
 
 ---
 
-## Backend
+## Homepage
+
+The homepage introduces the Reflex platform and provides navigation to the three role-based dashboards.
+
+It includes an animated visualisation of the delivery journey:
+
+```text
+Retailer
+   ↓
+Delivery Created
+   ↓
+Dispatcher
+   ↓
+Rider
+   ↓
+Customer
+```
+
+This animation is a frontend presentation feature and does not interact with the backend.
+
+---
+
+## Role-Based Dashboards
+
+Each role has a dedicated dashboard.
+
+This separation reduces unnecessary interface complexity.
+
+For example:
+
+* Retailers focus on creating and monitoring deliveries.
+* Dispatchers focus on assignment and coordination.
+* Riders focus on their assigned delivery actions.
+
+---
+
+# 3. Backend Architecture
 
 The backend uses:
 
 * Node.js
 * Express.js
 
-Express provides the REST API used by the frontend to create deliveries, retrieve deliveries, assign riders and update delivery status.
+The backend acts as the central coordination layer.
+
+Its responsibilities include:
+
+* Receiving delivery requests.
+* Returning delivery data.
+* Returning rider data.
+* Assigning riders.
+* Updating delivery status.
+* Confirming deliveries.
+* Publishing delivery events.
+
+The frontend communicates with the backend through HTTP requests and receives live delivery events through Server-Sent Events.
 
 ---
 
-## Database
+# 4. Database Architecture
 
-The system uses SQLite.
+Reflex uses SQLite for persistent storage.
 
-SQLite stores information about:
+The database stores information about:
 
-* Deliveries
-* Riders
-* Delivery assignments
-* Delivery status
-* Confirmation codes
+## Riders
 
-SQLite was selected because it is lightweight, easy to set up and appropriate for demonstrating the MVP without requiring a separate database server.
+Rider information includes:
+
+* Rider ID.
+* Rider name.
+
+## Deliveries
+
+Delivery information includes:
+
+* Delivery ID.
+* Customer name.
+* Customer phone number.
+* Delivery address.
+* Item description.
+* Delivery status.
+* Assigned rider.
+* Confirmation code.
+* Created timestamp.
+* Updated timestamp.
 
 ---
 
-## Real-Time Updates
+# 5. Delivery Workflow
 
-The system uses Server-Sent Events.
+The delivery lifecycle follows controlled state transitions.
 
-When an important delivery event occurs, the server notifies connected dashboards.
+```text
+┌───────────────┐
+│ Retailer      │
+│ Creates Order │
+└───────┬───────┘
+        │
+        ▼
+      OPEN
+        │
+        │ Dispatcher assigns rider
+        ▼
+    ASSIGNED
+        │
+        │ Rider collects item
+        ▼
+   PICKED_UP
+        │
+        │ Rider enters confirmation code
+        ▼
+    DELIVERED
+```
+
+Each state represents the current stage of the delivery.
+
+The use of explicit statuses makes delivery progress easier to understand and display across all dashboards.
+
+---
+
+# 6. API Communication
+
+The frontend communicates with the backend using HTTP requests.
 
 Examples include:
 
-* Delivery created
-* Rider assigned
-* Delivery status updated
-* Delivery confirmed
+```text
+POST /api/deliveries
+GET  /api/deliveries
+GET  /api/riders
+```
 
-The dashboards then reload the latest delivery information.
+The delivery workflow also includes API operations for:
 
----
+* Assigning riders.
+* Retrieving rider deliveries.
+* Updating delivery status.
+* Confirming delivery.
 
-# 3. System Architecture
-
-The Reflex system follows a three-layer architecture.
-
-## Presentation Layer
-
-The presentation layer consists of the web pages used by the three personas.
-
-Retailer:
-
-Creates delivery requests and monitors delivery progress.
-
-Dispatcher:
-
-Views open deliveries and assigns riders.
-
-Rider:
-
-Views assigned deliveries and updates delivery status.
+The frontend preserves the API contract between the existing JavaScript and backend.
 
 ---
 
-## Application Layer
+# 7. Real-Time Architecture
 
-The application layer is the Node.js and Express server.
+## Server-Sent Events
 
-The server:
+Reflex uses Server-Sent Events (SSE) to provide server-to-browser delivery updates.
 
-* Receives requests from the dashboards.
-* Validates delivery actions.
-* Updates the database.
-* Generates confirmation codes.
-* Controls delivery status changes.
-* Sends real-time events to connected dashboards.
+The frontend connects to:
 
----
+```text
+/api/events
+```
 
-## Data Layer
+using the browser's:
 
-The SQLite database stores the persistent delivery information.
+```text
+EventSource
+```
 
-The database allows delivery information to remain available even when the browser is refreshed.
+API.
 
----
+The system listens for events including:
 
-# 4. Delivery Workflow
+```text
+delivery-created
+delivery-assigned
+status-updated
+delivery-confirmed
+```
 
-The normal delivery workflow is:
+When an event is received, the frontend reloads the latest delivery information.
 
-OPEN
-
-↓
-
-ASSIGNED
-
-↓
-
-PICKED_UP
-
-↓
-
-DELIVERED
-
-A delivery cannot be completed immediately without first being assigned and picked up.
-
-This structured workflow helps prevent invalid delivery updates.
+This keeps connected dashboards synchronised with changes happening elsewhere in the delivery workflow.
 
 ---
 
-# 5. Assignment Flow
+# 8. Role of `realtime.js`
 
-1. A retailer creates a delivery.
-2. The delivery is stored with an OPEN status.
-3. The dispatcher views the open delivery.
-4. The dispatcher selects a rider.
-5. The server records the rider assignment.
-6. The delivery status changes to ASSIGNED.
-7. The assigned rider can see the delivery in the Rider Dashboard.
+The file:
+
+```text
+public/realtime.js
+```
+
+supports frontend real-time behaviour and shared user interface features.
+
+It is loaded by the dashboard pages.
+
+Its purpose is to provide reusable real-time presentation functionality, such as:
+
+* Live connection indicators.
+* Delivery update notifications.
+* Shared real-time user feedback.
+
+The role-specific JavaScript files continue to manage their own dashboard data and workflow actions.
+
+This separation keeps the shared real-time user experience separate from role-specific delivery functionality.
 
 ---
 
-# 6. Delivery Confirmation Flow
+# 9. Why Server-Sent Events Were Used
 
-When a delivery is created, the system generates a confirmation code.
+The current system mainly needs one-way communication:
 
-The rider must enter the correct confirmation code when confirming delivery.
+```text
+Server
+   ↓
+Dashboard
+```
 
-The server validates the confirmation code before changing the delivery status to DELIVERED.
+When delivery information changes, the server notifies connected dashboards.
 
-This provides a basic proof-of-delivery mechanism in the MVP.
+Users continue to send actions such as:
+
+* Creating deliveries.
+* Assigning riders.
+* Updating delivery status.
+
+through normal HTTP requests.
+
+SSE therefore provides a simpler model for the current MVP than introducing full two-way WebSocket communication.
 
 ---
 
-# 7. Real-Time Update Flow
+# 10. System Data Flow
 
-When a delivery event occurs:
+The overall flow is:
 
-1. A user performs an action.
-2. The frontend sends a request to the Express server.
-3. The server validates the request.
-4. The SQLite database is updated.
-5. The server publishes a Server-Sent Event.
-6. Connected dashboards receive the event.
-7. The dashboards reload the latest information.
+```text
+1. Retailer creates delivery
+            │
+            ▼
+2. Backend stores delivery
+            │
+            ▼
+3. Delivery event is published
+            │
+            ▼
+4. Connected dashboards receive update
+            │
+            ▼
+5. Dispatcher assigns rider
+            │
+            ▼
+6. Backend updates database
+            │
+            ▼
+7. Delivery event is published
+            │
+            ▼
+8. Rider dashboard receives updated information
+            │
+            ▼
+9. Rider updates delivery progress
+            │
+            ▼
+10. Connected dashboards receive the latest status
+```
 
-This reduces the need for users to manually refresh their pages.
+---
+
+# 11. Architectural Strengths
+
+The current architecture provides:
+
+* Clear separation of user roles.
+* Centralised delivery coordination.
+* Persistent delivery storage.
+* Simple REST communication.
+* Live server-to-client updates.
+* A clear delivery state model.
+* A lightweight technology stack.
+* Low infrastructure complexity.
+
+---
+
+# 12. Architectural Limitations
+
+The current MVP also has limitations.
+
+These include:
+
+* SQLite is not designed for large distributed production workloads.
+* Server-Sent Events provide limited two-way communication.
+* The current MVP does not provide full authentication.
+* Role-based pages are not the same as production-grade access control.
+* The application does not currently include live GPS tracking.
+* Advanced failure recovery and monitoring would be required for production.
+
+These limitations are documented further in:
+
+```text
+TRADEOFFS.md
+```
+
+and:
+
+```text
+ROADMAP.md
+```
+
+---
+
+# Conclusion
+
+Reflex uses a lightweight architecture designed to validate the core delivery coordination workflow.
+
+The system combines:
+
+* Role-based dashboards.
+* Express API communication.
+* SQLite persistence.
+* Controlled delivery states.
+* Server-Sent Event updates.
+
+This approach prioritises simplicity and rapid MVP development while creating a foundation that can later be extended with stronger security, scalability, and operational capabilities.
+s

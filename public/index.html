@@ -1,173 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reflex Delivery System</title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
   <header class="main-header">
-
-    <div class="logo">
-      ⚡ REFLEX
+    <div class="brand-block">
+      <div class="logo"><span class="mark">⚡</span>REFLEX</div>
+      <span class="motto-tag">Every Delivery. Every Move. In Sync.</span>
     </div>
 
     <nav>
-
-      <a
-        href="index.html"
-        class="active"
-      >
-        Home
-      </a>
-
-      <a href="retailer.html">
-        Retailer
-      </a>
-
-      <a href="dispatcher.html">
-        Dispatcher
-      </a>
-
-      <a href="rider.html">
-        Rider
-      </a>
-
+      <a href="index.html" class="active">Home</a>
+      <a href="retailer.html">Retailer</a>
+      <a href="dispatcher.html">Dispatcher</a>
+      <a href="rider.html">Rider</a>
     </nav>
 
+    <div class="live-indicator">
+      <span class="live-dot"></span>
+      Live system
+    </div>
   </header>
-
 
   <main class="home-page">
 
     <section class="hero">
-
-      <h1>
-        Delivery Coordination Made Simple
-      </h1>
-
-      <p>
-        Reflex helps small retailers create deliveries,
-        dispatchers assign riders, and riders track
-        delivery progress from one central system.
+      <span class="eyebrow">Delivery coordination platform</span>
+      <h1>Delivery Coordination Made Simple</h1>
+      <p class="motto">"Every Delivery. Every Move. In Sync."</p>
+      <p class="lede">
+        Reflex connects retailers, dispatchers, and riders into one coordinated
+        workflow — a delivery moves from creation to confirmation with every
+        dashboard updating the instant something changes.
       </p>
-
+      <div class="flow-line">
+        <span class="seg">🏪 Retailers</span>
+        <span class="sep">→</span>
+        <span class="seg">📋 Dispatchers</span>
+        <span class="sep">→</span>
+        <span class="seg">🛵 Riders</span>
+      </div>
     </section>
 
+    <section class="journey-panel">
+      <div class="journey-panel-title">How a delivery moves through Reflex</div>
+      <div class="journey-track" id="journeyTrack">
+        <div class="journey-rail"><div class="journey-rail-fill" id="journeyRailFill"></div></div>
+        <div class="journey-package" id="journeyPackage">📦</div>
+
+        <div class="journey-stop" data-stop="0">
+          <div class="journey-node">🏪</div>
+          <div class="journey-label">Retailer</div>
+        </div>
+        <div class="journey-stop" data-stop="1">
+          <div class="journey-node">📦</div>
+          <div class="journey-label">Delivery Created</div>
+        </div>
+        <div class="journey-stop" data-stop="2">
+          <div class="journey-node">📋</div>
+          <div class="journey-label">Dispatcher</div>
+        </div>
+        <div class="journey-stop" data-stop="3">
+          <div class="journey-node">🛵</div>
+          <div class="journey-label">Rider</div>
+        </div>
+        <div class="journey-stop" data-stop="4">
+          <div class="journey-node">🏠</div>
+          <div class="journey-label">Customer</div>
+        </div>
+      </div>
+    </section>
 
     <section class="role-selection">
-
-      <h2>
-        Choose Your Dashboard
-      </h2>
-
+      <h2>Choose Your Dashboard</h2>
 
       <div class="role-grid">
 
-
-        <a
-          href="retailer.html"
-          class="role-card"
-        >
-
-          <div class="role-icon">
-            🏪
-          </div>
-
-          <h3>
-            Retailer Staff
-          </h3>
-
-          <p>
-            Create delivery requests and track
-            delivery progress.
-          </p>
-
-          <span>
-            Open Dashboard →
-          </span>
-
+        <a href="retailer.html" class="role-card retailer">
+          <div class="role-icon">🏪</div>
+          <h3>Retailer</h3>
+          <p>Create and monitor deliveries from one place.</p>
+          <span class="cta-btn">Open Dashboard →</span>
         </a>
 
-
-        <a
-          href="dispatcher.html"
-          class="role-card"
-        >
-
-          <div class="role-icon">
-            📋
-          </div>
-
-          <h3>
-            Dispatcher
-          </h3>
-
-          <p>
-            View open deliveries and assign
-            riders to delivery requests.
-          </p>
-
-          <span>
-            Open Dashboard →
-          </span>
-
+        <a href="dispatcher.html" class="role-card dispatcher">
+          <div class="role-icon">📋</div>
+          <h3>Dispatcher</h3>
+          <p>Assign riders and coordinate delivery operations.</p>
+          <span class="cta-btn">Open Dashboard →</span>
         </a>
 
-
-        <a
-          href="rider.html"
-          class="role-card"
-        >
-
-          <div class="role-icon">
-            🛵
-          </div>
-
-          <h3>
-            Rider
-          </h3>
-
-          <p>
-            View assigned deliveries and update
-            delivery progress.
-          </p>
-
-          <span>
-            Open Dashboard →
-          </span>
-
+        <a href="rider.html" class="role-card rider">
+          <div class="role-icon">🛵</div>
+          <h3>Rider</h3>
+          <p>Manage assigned deliveries and update progress in real time.</p>
+          <span class="cta-btn">Open Dashboard →</span>
         </a>
-
 
       </div>
-
     </section>
 
   </main>
 
-
   <footer>
-
-    <p>
-      ⚡ Reflex Delivery Coordination System
-    </p>
-
+    <p>⚡ Reflex Delivery Coordination System</p>
   </footer>
 
-</body>
+  <script>
+    // Purely decorative homepage animation — no API calls, no backend interaction.
+    // Cycles the package through the 5 checkpoints on a loop.
+    (function () {
+      const stops = Array.from(document.querySelectorAll(".journey-stop"));
+      const railFill = document.getElementById("journeyRailFill");
+      const pkg = document.getElementById("journeyPackage");
+      const track = document.getElementById("journeyTrack");
+      let current = 0;
 
+      function positionPackage(index) {
+        const stopEl = stops[index];
+        const trackRect = track.getBoundingClientRect();
+        const stopRect = stopEl.getBoundingClientRect();
+        const centerX = stopRect.left - trackRect.left + stopRect.width / 2;
+        pkg.style.left = `${centerX - 15}px`;
+      }
+
+      function render() {
+        stops.forEach((stop, i) => {
+          stop.classList.remove("active", "done");
+          if (i < current) stop.classList.add("done");
+          if (i === current) stop.classList.add("active");
+        });
+        const pct = (current / (stops.length - 1)) * 100;
+        railFill.style.width = `${pct}%`;
+        positionPackage(current);
+      }
+
+      function tick() {
+        current = (current + 1) % stops.length;
+        render();
+      }
+
+      render();
+      window.addEventListener("resize", () => positionPackage(current));
+      setInterval(tick, 1400);
+    })();
+  </script>
+
+  <script src="realtime.js"></script>
+  <script>initHomeLiveIndicator();</script>
+
+</body>
 </html>

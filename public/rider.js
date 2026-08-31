@@ -77,7 +77,7 @@ function renderRiderDeliveries() {
 
     riderDeliveries.innerHTML =
 
-      "<p>Select your rider profile to view deliveries.</p>";
+      "<p class=\"empty-note\">Select your rider profile to view deliveries.</p>";
 
     return;
 
@@ -101,7 +101,7 @@ function renderRiderDeliveries() {
 
     riderDeliveries.innerHTML =
 
-      "<p>You currently have no assigned deliveries.</p>";
+      "<p class=\"empty-note\">You currently have no assigned deliveries.</p>";
 
     return;
 
@@ -110,52 +110,50 @@ function renderRiderDeliveries() {
 
   riderItems.forEach((delivery) => {
 
+    const isDelivered =
+      delivery.status === "DELIVERED";
+
+    const deliveredTimeRow =
+      isDelivered
+        ? `<div class="time-item"><span class="time-icon">✅</span><strong>Delivered</strong> ${formatDateTime(delivery.updated_at)}</div>`
+        : "";
+
     riderDeliveries.innerHTML += `
 
-      <div class="delivery-card">
+      <div class="delivery-card ${isDelivered ? "is-delivered" : ""}">
 
-
-        <h3>
-          Delivery #${delivery.id}
-        </h3>
+        <div class="delivery-card-head">
+          <div>
+            <h3>Delivery #${delivery.id}</h3>
+            <p class="cust-name">${delivery.customer_name}</p>
+          </div>
+          <span class="status status-${delivery.status.toLowerCase()}">
+            ${delivery.status}
+          </span>
+        </div>
 
 
         <p>
-          <strong>Customer:</strong>
-          ${delivery.customer_name}
-        </p>
-
-
-        <p>
-          <strong>Phone:</strong>
+          <strong>Phone</strong>
           ${delivery.customer_phone}
         </p>
 
 
         <p>
-          <strong>Address:</strong>
+          <strong>Address</strong>
           ${delivery.delivery_address}
         </p>
 
 
         <p>
-          <strong>Item:</strong>
+          <strong>Item</strong>
           ${delivery.item_description}
         </p>
 
-
-        <p>
-          <strong>Status:</strong>
-
-          <span
-            class="status status-${delivery.status.toLowerCase()}"
-          >
-
-            ${delivery.status}
-
-          </span>
-
-        </p>
+        <div class="timestamps">
+          <div class="time-item"><span class="time-icon">🕒</span><strong>Booked</strong> ${formatDateTime(delivery.created_at)}</div>
+          ${deliveredTimeRow}
+        </div>
 
 
         <div class="actions">
@@ -163,6 +161,8 @@ function renderRiderDeliveries() {
           ${getRiderActions(delivery)}
 
         </div>
+
+        ${getConfirmBox(delivery)}
 
 
       </div>
@@ -209,7 +209,7 @@ function getRiderActions(
     return `
 
       <button
-        onclick="confirmDelivery(
+        onclick="toggleConfirmBox(
           ${delivery.id}
         )"
       >
@@ -230,11 +230,9 @@ function getRiderActions(
 
     return `
 
-      <strong>
-
+      <span class="completed-tag">
         ✓ Delivery Completed
-
-      </strong>
+      </span>
 
     `;
 
@@ -242,6 +240,52 @@ function getRiderActions(
 
 
   return "";
+
+}
+
+
+function getConfirmBox(delivery) {
+
+  if (delivery.status !== "PICKED_UP") {
+    return "";
+  }
+
+  return `
+    <div class="confirm-box" id="confirm-box-${delivery.id}">
+      <p class="hint">Enter the confirmation code the customer was given.</p>
+      <div class="row">
+        <input
+          type="text"
+          maxlength="8"
+          placeholder="e.g. A1B2C3D4"
+          id="confirm-input-${delivery.id}"
+        >
+        <button onclick="confirmDelivery(${delivery.id})">Submit</button>
+      </div>
+      <p class="code-error" id="confirm-error-${delivery.id}"></p>
+    </div>
+  `;
+
+}
+
+
+function toggleConfirmBox(deliveryId) {
+
+  const box =
+    document.getElementById(`confirm-box-${deliveryId}`);
+
+  if (!box) return;
+
+  box.classList.toggle("visible");
+
+  if (box.classList.contains("visible")) {
+
+    const input =
+      document.getElementById(`confirm-input-${deliveryId}`);
+
+    if (input) input.focus();
+
+  }
 
 }
 
@@ -297,9 +341,7 @@ async function updateStatus(
   }
 
 
-  alert(
-    "Delivery marked as picked up!"
-  );
+  showToast(`Delivery #${deliveryId} marked as picked up`);
 
 
   loadDeliveries();
@@ -311,16 +353,27 @@ async function confirmDelivery(
   deliveryId
 ) {
 
+  const input =
+    document.getElementById(`confirm-input-${deliveryId}`);
+
+  const errorEl =
+    document.getElementById(`confirm-error-${deliveryId}`);
+
   const code =
-    prompt(
-      "Enter the delivery confirmation code:"
-    );
+    input ? input.value.trim() : "";
 
 
   if (!code) {
 
+    if (input) input.focus();
+
     return;
 
+  }
+
+  if (errorEl) {
+    errorEl.classList.remove("visible");
+    errorEl.textContent = "";
   }
 
 
@@ -365,18 +418,19 @@ async function confirmDelivery(
     !response.ok
   ) {
 
-    alert(
-      result.error
-    );
+    if (errorEl) {
+      errorEl.textContent = result.error;
+      errorEl.classList.add("visible");
+    } else {
+      alert(result.error);
+    }
 
     return;
 
   }
 
 
-  alert(
-    "Delivery successfully confirmed!"
-  );
+  showToast(`Delivery #${deliveryId} delivered ✓`);
 
 
   loadDeliveries();
@@ -390,6 +444,9 @@ function connectToEvents() {
     new EventSource(
       "/api/events"
     );
+
+  events.onopen = () => setLiveOn();
+  events.onerror = () => setLiveOff();
 
 
   [

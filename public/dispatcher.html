@@ -1,128 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dispatcher Dashboard | Reflex</title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-
-
-<body>
-
+<body data-role="dispatcher">
 
   <header class="main-header">
-
-    <div class="logo">
-      ⚡ REFLEX
+    <div class="brand-block">
+      <div class="logo"><span class="mark">⚡</span>REFLEX</div>
+      <span class="motto-tag">Every Delivery. Every Move. In Sync.</span>
     </div>
 
-
     <nav>
-
-      <a href="index.html">
-        Home
-      </a>
-
-      <a href="retailer.html">
-        Retailer
-      </a>
-
-      <a
-        href="dispatcher.html"
-        class="active"
-      >
-        Dispatcher
-      </a>
-
-      <a href="rider.html">
-        Rider
-      </a>
-
+      <a href="index.html">Home</a>
+      <a href="retailer.html">Retailer</a>
+      <a href="dispatcher.html" class="active">Dispatcher</a>
+      <a href="rider.html">Rider</a>
     </nav>
 
+    <div class="live-indicator">
+      <span class="live-dot"></span>
+      Live updates
+    </div>
   </header>
-
-
 
   <main class="dashboard-page">
 
-
     <section class="dashboard-heading">
-
-      <h1>
-        📋 Dispatcher Dashboard
-      </h1>
-
-      <p>
-        View open delivery requests and assign
-        them to available riders.
-      </p>
-
+      <h1>📋 Dispatcher Dashboard</h1>
+      <p>View open delivery requests and assign them to available riders.</p>
     </section>
 
+    <div class="card-grid">
 
+      <section class="dashboard-card">
+        <h2>
+          Open Delivery Requests
+          <span class="count-badge" id="openCount">0</span>
+        </h2>
 
-    <section class="dashboard-card">
+        <div id="openDeliveries">
+          <p class="loading-note">Loading open deliveries...</p>
+        </div>
+      </section>
 
+      <section class="dashboard-card">
+        <h2>
+          All Deliveries
+          <span class="count-badge" id="allCount">0</span>
+        </h2>
 
-      <h2>
-        Open Delivery Requests
-      </h2>
+        <div id="allDeliveries">
+          <p class="loading-note">Loading deliveries...</p>
+        </div>
+      </section>
 
-
-      <div id="openDeliveries">
-
-        <p>
-          Loading open deliveries...
-        </p>
-
-      </div>
-
-
-    </section>
-
-
-
-    <section class="dashboard-card">
-
-
-      <h2>
-        All Deliveries
-      </h2>
-
-
-      <div id="allDeliveries">
-
-        <p>
-          Loading deliveries...
-        </p>
-
-      </div>
-
-
-    </section>
-
+    </div>
 
   </main>
 
-
-
+  <script src="realtime.js"></script>
   <script src="dispatcher.js"></script>
 
-
 </body>
-
 </html>
