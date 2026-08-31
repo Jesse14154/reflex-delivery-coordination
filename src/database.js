@@ -1,8 +1,14 @@
 const Database = require("better-sqlite3");
 const path = require("path");
+const fs = require("fs");
 
-const dbPath = path.join(__dirname, "../data/reflex.db");
+const dataDirectory = path.join(__dirname, "../data");
 
+if (!fs.existsSync(dataDirectory)) {
+  fs.mkdirSync(dataDirectory, { recursive: true });
+}
+
+const dbPath = path.join(dataDirectory, "reflex.db");
 const db = new Database(dbPath);
 
 db.exec(`
